@@ -9,8 +9,8 @@ import {
 } from "typeorm";
 import { Exclude } from "class-transformer";
 
-@Entity({ schema: "Client" })
-export class ClientEntity {
+@Entity({ schema: "Application" })
+export class AppEntity {
     @PrimaryColumn({ unique: true })
     id: number;
 
