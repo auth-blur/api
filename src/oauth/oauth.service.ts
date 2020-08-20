@@ -18,6 +18,15 @@ import { TokenDTO } from "./dto/token.dto";
 import { SnowFlakeFactory, Type, ClientFlag } from "src/libs/snowflake";
 import { UserService } from "src/user/user.service";
 
+export enum Scope {
+    IDENTIFY = 1 << 0,
+    EMAIL = 1 << 1,
+    AVATARS = 1 << 2,
+    AVATAR_DEFAULT = 1 << 3,
+    AVATAR_UPLOAD = 1 << 4,
+    ROOT = 1 << 5,
+}
+
 @Injectable()
 export class OAuthService {
     public Scopes = {
@@ -40,6 +49,12 @@ export class OAuthService {
         let res = 0;
         for (const scope of scopes) res |= this.Scopes[scope];
         return res;
+    }
+
+    matchScope(validScope: Scope, scope: Scope): boolean {
+        if ((scope & Scope.ROOT) == Scope.ROOT) return true;
+        if ((validScope & scope) != validScope) return false;
+        return true;
     }
 
     deserializationScope = (scope: number): string[] =>
