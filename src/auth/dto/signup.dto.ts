@@ -1,0 +1,12 @@
+import { Length, IsEmail } from "class-validator";
+
+export abstract class SignupDTO {
+    @Length(3, 32)
+    username: string;
+
+    @IsEmail()
+    mail: string;
+
+    @Length(6, 32)
+    password: string;
+}
