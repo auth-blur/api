@@ -6,10 +6,10 @@ import {
     Length,
     IsEmail,
 } from "class-validator";
-import { SnowFlakeFactory } from "src/libs/snowflake";
+import { isSnowflake } from "src/libs/snowflake";
 
 export abstract class TokenDTO {
-    @ValidateIf(id => SnowFlakeFactory.isSnowflake(id))
+    @ValidateIf(id => isSnowflake(id))
     client_id: number;
 
     @IsUUID("4")

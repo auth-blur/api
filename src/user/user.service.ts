@@ -36,6 +36,11 @@ export class UserService {
         return user;
     }
 
+    async isExist(id: number): Promise<boolean> {
+        const users = await this.userRepository.count({ id });
+        return users === 1;
+    }
+
     async createUser({
         mail,
         username,
