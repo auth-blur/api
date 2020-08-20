@@ -1,6 +1,6 @@
 declare module "picassco" {
     export type TConfig = {
-        port: number
-        rootPath: string
+        PORT: number
+        ROOT_PATH: string
     }
 }

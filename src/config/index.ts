@@ -1,6 +1,6 @@
 import { TConfig } from "picassco"
 
 export default ():TConfig => ({
-    port: parseInt(process.env.PORT) || 3001,
-    rootPath: process.env.ROOT_PATH || "/v1"
-})
+    PORT: parseInt(process.env.PORT) || 3001,
+    ROOT_PATH: process.env.ROOT_PATH || "/v1"
+});

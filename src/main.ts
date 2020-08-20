@@ -13,12 +13,12 @@ async function bootstrap() {
   app.use(helmet())
   app.enableCors()
 
-  app.setGlobalPrefix(config().rootPath)
+  app.setGlobalPrefix(config().ROOT_PATH)
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true
     })
   )
-  await app.listen(config().port,"0.0.0.0");
+  await app.listen(config().PORT,"0.0.0.0");
 }
 bootstrap();
