@@ -30,7 +30,8 @@ export class OAuthService {
     };
 
     constructor(
-        private readonly developerService: AppService,
+        @Inject(forwardRef(() => AppService))
+        private readonly appService: AppService,
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
     ) {}
@@ -77,10 +78,9 @@ export class OAuthService {
         scope,
         user_id,
     }: AuthorizationDTO): Promise<PicasscoResponse> {
-        const [
-            isExist,
-            ClientApp,
-        ] = await this.developerService.isExistApplication(client_id);
+        const [isExist, ClientApp] = await this.appService.isExistApplication(
+            client_id,
+        );
         if (!isExist) throw new Error("Unknown application");
         if (!ClientApp.redirects.includes(redirect_uri))
             throw new Error("Unknown redirect_uri");
@@ -111,10 +111,7 @@ export class OAuthService {
         password,
         redirect_uri,
     }: TokenDTO): Promise<PicasscoResponse> {
-        const [
-            isValid,
-            ClientApp,
-        ] = await this.developerService.validateApplication({
+        const [isValid, ClientApp] = await this.appService.validateApplication({
             id: client_id,
             secret: client_secret,
         });

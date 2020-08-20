@@ -25,15 +25,15 @@ export class UserService {
 
     constructor(
         @InjectRepository(UserEntity)
-        private userRepository: MongoRepository<UserEntity>,
+        private readonly userRepository: MongoRepository<UserEntity>,
         @Inject(forwardRef(() => OAuthService))
         private readonly oauthService: OAuthService,
     ) {}
 
-    async getMeData(id:number):Promise<UserEntity> {
-        const user = await this.userRepository.findOne({id})
-        if(!user) throw new NotFoundException("User Not Found")
-        return user
+    async getMeData(id: number): Promise<UserEntity> {
+        const user = await this.userRepository.findOne({ id });
+        if (!user) throw new NotFoundException("User Not Found");
+        return user;
     }
 
     async createUser({

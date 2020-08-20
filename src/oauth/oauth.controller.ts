@@ -9,12 +9,14 @@ export class OAuthController {
     constructor(private readonly oauthService: OAuthService) {}
 
     @Post("/authorize")
-    async authorize(@Body() authorizeBody:AuthorizationDTO):Promise<PicasscoResponse> {
-        return await this.oauthService.authorization(authorizeBody)
+    async authorize(
+        @Body() authorizeBody: AuthorizationDTO,
+    ): Promise<PicasscoResponse> {
+        return await this.oauthService.authorization(authorizeBody);
     }
 
     @Post("/token")
     async getToken(@Body() tokenBody: TokenDTO): Promise<PicasscoResponse> {
-        return await this.oauthService.getToken(tokenBody)
+        return await this.oauthService.getToken(tokenBody);
     }
 }
