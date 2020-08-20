@@ -1,6 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
-import * as helmet from "helmet";
+import helmet from "fastify-helmet";
+import * as csurf from "csurf";
 import {
     FastifyAdapter,
     NestFastifyApplication,
@@ -13,7 +14,8 @@ async function bootstrap() {
         AppModule,
         new FastifyAdapter(),
     );
-    app.use(helmet());
+    app.register(helmet);
+    app.use(csurf());
     app.enableCors();
 
     app.setGlobalPrefix(config().ROOT_PATH);
