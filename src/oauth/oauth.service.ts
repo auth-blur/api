@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { cache } from "memory-cache";
 import { CodePayload, PicasscoResponse } from "picassco";
 import { AuthorizationDTO } from "./dto/authorization.dto";
-import { DeveloperService } from "src/developer/developer.service";
+import { AppService } from "src/application/app.service";
 import { TokenDTO } from "./dto/token.dto";
 import { SnowFlakeFactory, Type, ClientFlag } from "src/libs/snowflake";
 import { UserService } from "src/user/user.service";
@@ -30,7 +30,7 @@ export class OAuthService {
     };
 
     constructor(
-        private readonly developerService: DeveloperService,
+        private readonly developerService: AppService,
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
     ) {}
@@ -144,11 +144,11 @@ export class OAuthService {
             };
         }
         if (grant_type === "password") {
-            const snowflakeApp = new SnowFlakeFactory(
+            const snowflake = new SnowFlakeFactory(
                 [ClientFlag.VERIFIED],
                 Type.CLIENT,
             );
-            const SID = snowflakeApp.serialization(client_id);
+            const SID = snowflake.serialization(client_id);
             if (!SID.flags.includes("VERIFIED"))
                 throw new HttpException(
                     "Invalid Application",

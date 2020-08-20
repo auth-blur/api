@@ -5,6 +5,7 @@ import {
     HttpStatus,
     Inject,
     forwardRef,
+    NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./user.entity";
@@ -28,6 +29,13 @@ export class UserService {
         @Inject(forwardRef(() => OAuthService))
         private readonly oauthService: OAuthService,
     ) {}
+
+    async getMeData(id:number):Promise<UserEntity> {
+        const user = await this.userRepository.findOne({id})
+        if(!user) throw new NotFoundException("User Not Found")
+        return user
+    }
+
     async createUser({
         mail,
         username,
