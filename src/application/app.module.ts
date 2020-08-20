@@ -10,4 +10,4 @@ import { AppEntity } from "./app.entity";
     providers: [AppService],
     exports: [TypeOrmModule, AppService],
 })
-export class DeveloperModule {}
+export class ApplicationModule {}
