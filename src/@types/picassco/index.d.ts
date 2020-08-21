@@ -5,7 +5,7 @@ declare module "picassco" {
         MONGODB_URI: string;
         SECRET_KEY: string;
         App: {
-            id: string;
+            id: number;
             secret: string;
         };
         Firebase: {
@@ -23,6 +23,14 @@ declare module "picassco" {
     export interface PicasscoResponse {
         message?: string;
         [propName: string]: unknown;
+    }
+
+    export interface PicasscoRequest extends Express.Request {
+        user?: PicasscoReqUser;
+    }
+
+    export interface PicasscoReqUser extends TokenPayload {
+        flags: number;
     }
 
     export interface TokenPayload {
