@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { Exclude } from "class-transformer";
 
-@Entity({ schema: "Application" })
+@Entity({ name: "Application" })
 export class AppEntity {
     @PrimaryColumn({ unique: true })
     id: number;
@@ -21,18 +21,20 @@ export class AppEntity {
     @Column()
     avatar: number;
 
-    @Column()
+    @Column({ nullable: false })
     name: string;
 
     @Column()
     description: string;
 
+    @Exclude()
     @Column({ nullable: false, unique: true })
     secret: string;
 
     @Column({ nullable: false })
-    ownerID: number;
+    owner: number;
 
+    @Exclude()
     @Column()
     redirects: string[];
 
@@ -41,4 +43,8 @@ export class AppEntity {
 
     @UpdateDateColumn({ type: "timestamp" })
     updateAt: number;
+
+    constructor(partial: Partial<AppEntity>) {
+        Object.assign(this, partial);
+    }
 }
