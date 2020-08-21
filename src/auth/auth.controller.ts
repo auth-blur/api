@@ -1,24 +1,28 @@
-import { Controller, Post, Body } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Get } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { PicasscoResponse } from "picassco";
+import { PicasscoResponse, PicasscoReqUser } from "picassco";
 import { SignupDTO } from "./dto/signup.dto";
+import { SigninDTO } from "./dto/signin.dto";
+import { OAuthGuard } from "src/oauth/oauth.guard";
+import { User } from "src/user/user.decorator";
 
-@Controller("/auth")
+@Controller("auth")
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    /*@Get("/whoami")
-    whoami() {
-        
-    }*/
+    @Get("whoami")
+    @UseGuards(OAuthGuard)
+    whoami(@User() user:PicasscoReqUser):PicasscoReqUser {
+        return user
+    }
 
     @Post("/signup")
     async signup(@Body() body: SignupDTO): Promise<PicasscoResponse> {
-        return this.authService.signup(body);
+        return await this.authService.signup(body);
     }
 
-    /*@Post()
-    async signin() {
-
-    }*/
+    @Post("/signin")
+    async signin(@Body() body: SigninDTO):Promise<PicasscoResponse> {
+        return await this.authService.signin(body)
+    }
 }

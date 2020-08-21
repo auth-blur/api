@@ -8,6 +8,7 @@ import { PingModule } from "./ping/ping.module";
 import { UserModule } from "./user/user.module";
 import { OAuthModule } from "./oauth/oauth.module";
 import { ApplicationModule } from "./application/app.module";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { ApplicationModule } from "./application/app.module";
         ApplicationModule,
         UserModule,
         OAuthModule,
+        AuthModule
     ],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
 })
