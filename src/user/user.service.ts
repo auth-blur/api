@@ -11,10 +11,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./user.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
-import { PicasscoResponse } from "picassco";
 import { SnowFlakeFactory, UserFlag, Type } from "../libs/snowflake";
 import { OAuthService } from "../oauth/oauth.service";
 import * as argon2 from "argon2";
+import { plainToClass } from "class-transformer";
 
 @Injectable()
 export class UserService {
@@ -30,10 +30,21 @@ export class UserService {
         private readonly oauthService: OAuthService,
     ) {}
 
-    async getMeData(id: number): Promise<UserEntity> {
+    async getUser(id: number): Promise<UserEntity> {
         const user = await this.userRepository.findOne({ id });
         if (!user) throw new NotFoundException("User Not Found");
-        return user;
+        return Object.assign(plainToClass(UserEntity, user), {
+            flags: (id & 0x1f000) >> 12,
+        });
+    }
+
+    async getMyData(id: number): Promise<UserEntity> {
+        const user = await this.userRepository.findOne({ id });
+        if (!user) throw new NotFoundException("User Not Found");
+        return Object.assign(plainToClass(UserEntity, user), {
+            mail: user.mail,
+            flags: (id & 0x1f000) >> 12,
+        });
     }
 
     async isExist(id: number): Promise<boolean> {
@@ -45,7 +56,7 @@ export class UserService {
         mail,
         username,
         password,
-    }: SignupDTO): Promise<PicasscoResponse> {
+    }: SignupDTO): Promise<{ access_token: string; expiresIn: number }> {
         const isUnique = await this.isUnique({ mail, username });
         if (!isUnique)
             throw new ConflictException(
@@ -56,7 +67,14 @@ export class UserService {
             id,
             scope: this.oauthService.Scopes.root,
         });
-        await this.userRepository.create({ id, username, mail, password });
+        const hash = await argon2.hash(password);
+        const user = await this.userRepository.create({
+            id,
+            username,
+            mail,
+            password: hash,
+        });
+        await this.userRepository.save(user);
         return { access_token, expiresIn };
     }
     async isUnique({ username, mail }): Promise<boolean> {
