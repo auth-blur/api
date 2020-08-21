@@ -5,7 +5,10 @@ import { ApplicationModule } from "src/application/app.module";
 import { UserModule } from "src/user/user.module";
 
 @Module({
-    imports: [ApplicationModule, forwardRef(() => UserModule)],
+    imports: [
+        forwardRef(() => ApplicationModule),
+        forwardRef(() => UserModule),
+    ],
     controllers: [OAuthController],
     providers: [OAuthService],
     exports: [OAuthService],

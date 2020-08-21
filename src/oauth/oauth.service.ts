@@ -7,16 +7,15 @@ import {
     BadRequestException,
 } from "@nestjs/common";
 import * as Jwt from "jsonwebtoken";
-import ms from "ms";
-import Config from "src/config";
 import { v4 as uuidv4 } from "uuid";
-import { cache } from "memory-cache";
+import * as cache from "memory-cache";
 import { CodePayload, PicasscoResponse } from "picassco";
 import { AuthorizationDTO } from "./dto/authorization.dto";
 import { AppService } from "src/application/app.service";
 import { TokenDTO } from "./dto/token.dto";
-import { SnowFlakeFactory, Type, ClientFlag } from "src/libs/snowflake";
+import { SnowFlakeFactory, Type, AppFlag } from "src/libs/snowflake";
 import { UserService } from "src/user/user.service";
+import { ConfigService } from "@nestjs/config";
 
 export enum Scope {
     IDENTIFY = 1 << 0,
@@ -43,6 +42,7 @@ export class OAuthService {
         private readonly appService: AppService,
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
+        private readonly configService: ConfigService,
     ) {}
 
     serializationScope(scopes: string[]): number {
@@ -62,20 +62,27 @@ export class OAuthService {
             .filter(f => f[1] === (f[1] & scope))
             .map(f => f[0]);
 
-    genToken = (
-        payload: { id: number; scope: unknown },
-        expiresIn: number = ms("1y"),
-    ): { access_token: string; expiresIn: number } => ({
-        access_token: Jwt.sign(payload, Config().SECRET_KEY, {
-            algorithm: "HS512",
+    genToken(
+        payload: { id: number; scope: number },
+        expiresIn: number = 30 * 24 * 60 * 60 * 1000,
+    ): { access_token: string; expiresIn: number } {
+        const access_token = Jwt.sign(
+            payload,
+            this.configService.get<string>("SECRET_KEY"),
+            {
+                algorithm: "HS512",
+                expiresIn,
+            },
+        );
+        return {
+            access_token,
             expiresIn,
-        }),
-        expiresIn,
-    });
+        };
+    }
 
     genCode(ctx: CodePayload): string {
         const code = uuidv4();
-        cache.put(code, ctx, ms("1d"));
+        cache.put(code, ctx, 24 * 60 * 60 * 1000);
         return code;
     }
 
@@ -122,10 +129,15 @@ export class OAuthService {
         client_secret,
         grant_type,
         code,
+        username,
         mail,
         password,
         redirect_uri,
-    }: TokenDTO): Promise<PicasscoResponse> {
+    }: TokenDTO): Promise<{
+        access_token: string;
+        expiresIn: number;
+        token_type: string;
+    }> {
         const [isValid, ClientApp] = await this.appService.validateApplication({
             id: client_id,
             secret: client_secret,
@@ -146,35 +158,42 @@ export class OAuthService {
                     "Invalid Application",
                     HttpStatus.BAD_REQUEST,
                 );
-            const { access_token, expiresIn } = this.genToken({
-                id: codeCtx.userID,
-                scope: codeCtx.scope,
-            });
+            const { access_token, expiresIn } = this.genToken(
+                {
+                    id: codeCtx.userID,
+                    scope: codeCtx.scope,
+                },
+                10 * 60 * 1000,
+            );
             return {
                 access_token,
                 expiresIn,
+                token_type: "Bearer",
             };
         }
         if (grant_type === "password") {
             const snowflake = new SnowFlakeFactory(
-                [ClientFlag.VERIFIED],
-                Type.CLIENT,
+                [AppFlag.VERIFIED],
+                Type.APP,
             );
             const SID = snowflake.serialization(client_id);
-            if (!SID.flags.includes("VERIFIED"))
+            if (
+                !SID.flags.includes("VERIFIED") &&
+                !SID.flags.includes("SYSTEM")
+            )
                 throw new HttpException(
                     "Invalid Application",
                     HttpStatus.BAD_REQUEST,
                 );
             const user = await this.userService.isCorrectPassword(
-                mail,
+                mail ?? username,
                 password,
             );
             const { access_token, expiresIn } = this.genToken({
                 id: user.id,
                 scope: this.Scopes.root,
             });
-            return { access_token, expiresIn };
+            return { access_token, expiresIn, token_type: "Bearer" };
         }
         throw new BadRequestException("unknown grant_type");
     }

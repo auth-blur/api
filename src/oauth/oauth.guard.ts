@@ -31,14 +31,16 @@ export class OAuthGuard implements CanActivate {
             ctx.switchToHttp().getResponse(),
         ];
         let token: string =
-            req.headers["authorization"] || req.headers["x-access-token"];
+            req.headers["x-access-token"] ||
+            req.headers["authorization"] ||
+            req.query["access_token"];
 
         if (!token) return false;
         token = token.startsWith("Bearer")
             ? token.match(/[^Bearer]\S+/g)[0].trim()
             : token;
 
-        Jwt.verify(
+        await Jwt.verify(
             token,
             Config().SECRET_KEY,
             async (err, decoded: TokenPayload) => {
@@ -53,15 +55,15 @@ export class OAuthGuard implements CanActivate {
                             message: "Unauthorized Request: User Not Found",
                         },
                     });
-
-                req.user = decoded;
+                req.user = Object.assign({}, decoded, {
+                    flags: (decoded.id & 0x1f000) >> 12,
+                });
             },
         );
 
         if (flags && !matchFlags(flags, req.user.id)) return false;
         if (scope && !this.oauthService.matchScope(scope, req.user.scope))
             return false;
-
-        return false;
+        return true;
     }
 }
