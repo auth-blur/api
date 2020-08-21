@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { Exclude } from "class-transformer";
 
-@Entity({ schema: "User" })
+@Entity({ name: "User" })
 export class UserEntity {
     @PrimaryColumn({ unique: true })
     id: number;
@@ -21,6 +21,7 @@ export class UserEntity {
     @Column({ nullable: false, unique: true })
     username: string;
 
+    @Exclude()
     @Column({ nullable: false, unique: true })
     mail: string;
 
@@ -42,6 +43,10 @@ export class UserEntity {
 
     @UpdateDateColumn({ type: "timestamp" })
     updateAt: number;
+
+    @Exclude()
+    @Column({ default: false })
+    verified: boolean;
 
     constructor(partial: Partial<UserEntity>) {
         Object.assign(this, partial);
