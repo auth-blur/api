@@ -16,7 +16,7 @@ async function bootstrap() {
     );
     app.register(helmet);
     app.enableCors();
-    app.use(morgan("dev"))
+    app.use(morgan("dev"));
 
     app.setGlobalPrefix(config().ROOT_PATH);
     app.useGlobalPipes(

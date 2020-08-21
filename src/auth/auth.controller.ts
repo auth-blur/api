@@ -12,8 +12,8 @@ export class AuthController {
 
     @Get("whoami")
     @UseGuards(OAuthGuard)
-    whoami(@User() user:PicasscoReqUser):PicasscoReqUser {
-        return user
+    whoami(@User() user: PicasscoReqUser): PicasscoReqUser {
+        return user;
     }
 
     @Post("/signup")
@@ -22,7 +22,7 @@ export class AuthController {
     }
 
     @Post("/signin")
-    async signin(@Body() body: SigninDTO):Promise<PicasscoResponse> {
-        return await this.authService.signin(body)
+    async signin(@Body() body: SigninDTO): Promise<PicasscoResponse> {
+        return await this.authService.signin(body);
     }
 }

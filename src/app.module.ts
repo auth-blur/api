@@ -35,7 +35,7 @@ import { AuthModule } from "./auth/auth.module";
         ApplicationModule,
         UserModule,
         OAuthModule,
-        AuthModule
+        AuthModule,
     ],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
 })

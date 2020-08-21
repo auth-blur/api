@@ -8,7 +8,7 @@ export enum AvatarFlag {
     CLIENT = 1 << 1,
 }
 
-export enum ClientFlag {
+export enum AppFlag {
     NORMAL = 1 << 0,
     VERIFIED = 1 << 1,
     SYSTEM = 1 << 3,
@@ -17,14 +17,14 @@ export enum ClientFlag {
 export enum Type {
     USER = 1 << 0,
     AVATAR = 1 << 1,
-    CLIENT = 1 << 2,
+    APP = 1 << 2,
 }
-export type Flag = UserFlag | AvatarFlag | ClientFlag;
+export type Flag = UserFlag | AvatarFlag | AppFlag;
 
 const Types = {
     USER: 1 << 0,
     AVATAR: 1 << 1,
-    CLIENT: 1 << 2,
+    APP: 1 << 2,
 };
 
 const Flags = {
@@ -37,7 +37,7 @@ const Flags = {
         PRO_USER: 1 << 0,
         CLIENT: 1 << 1,
     },
-    CLIENT: {
+    APP: {
         NORMAL: 1 << 0,
         VERIFIED: 1 << 1,
         SYSTEM: 1 << 3,
