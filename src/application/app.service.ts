@@ -15,6 +15,7 @@ import { UserService } from "src/user/user.service";
 import { UserEntity } from "src/user/user.entity";
 import { plainToClass } from "class-transformer";
 import { CreateAppDTO } from "./dto/create-app.dto";
+import { AppPatchDTO } from "./dto/patch-app.dto";
 
 @Injectable()
 export class AppService {
@@ -113,5 +114,19 @@ export class AppService {
         if (!isExist) throw new NotFoundException("Application Not Found");
         await this.appRepository.deleteOne(app);
         return { message: "Successfully Deleted Application" };
+    }
+
+    async patchApp(
+        id: number,
+        { name, description }: AppPatchDTO,
+        user: PicasscoReqUser,
+    ): Promise<PicasscoResponse> {
+        const app = this.getApplication({ id, user });
+        Object.assign(app, { name, description });
+        await this.appRepository.updateOne({ id }, app);
+        return Object.assign(
+            { message: "Application updated successfully" },
+            app,
+        );
     }
 }

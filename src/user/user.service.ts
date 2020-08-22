@@ -9,7 +9,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./user.entity";
-import { AppEntity} from "src/application/app.entity";
+import { AppEntity } from "src/application/app.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
 import { SnowFlakeFactory, UserFlag, Type } from "../libs/snowflake";
@@ -106,35 +106,46 @@ export class UserService {
         return user;
     }
 
-    async patchUser({ username, mail, password, new_password }, user: PicasscoReqUser): Promise<PicasscoResponse> {
+    async patchUser(
+        { username, mail, password, new_password },
+        user: PicasscoReqUser,
+    ): Promise<PicasscoResponse> {
         let u = await this.getUser(user.id);
         u = await this.isCorrectPassword(u.mail, password);
         const uUser = {};
         if (username && username != u.username) {
             const isUnique = await this.isUnique({ username, mail });
-            if (!isUnique) throw new ConflictException("This username is already registered",);
+            if (!isUnique)
+                throw new ConflictException(
+                    "This username is already registered",
+                );
             uUser["username"] = username;
         }
         if (mail && mail != u.mail) {
             const isUnique = await this.isUnique({ username, mail });
-            if (!isUnique) throw new ConflictException("This mail is already registered",);
+            if (!isUnique)
+                throw new ConflictException("This mail is already registered");
             uUser["mail"] = mail;
         }
         if (new_password) {
-            if (new_password === password) throw new ConflictException("Must have a new password",);
+            if (new_password === password)
+                throw new ConflictException("Must have a new password");
             uUser["password"] = new_password;
         }
-        const newUser = await this.userRepository.findOneAndUpdate({ id: user.id }, uUser);
+        const newUser = await this.userRepository.findOneAndUpdate(
+            { id: user.id },
+            uUser,
+        );
         const { access_token, expiresIn } = this.oauthService.genToken({
             id: user.id,
-            scope: this.oauthService.Scopes.root
+            scope: this.oauthService.Scopes.root,
         });
         return {
             message: "Successfully edited",
             newUser,
             access_token,
-            expiresIn
-        }
+            expiresIn,
+        };
     }
 
     async deleteUser(id: number): Promise<PicasscoResponse> {
@@ -143,6 +154,6 @@ export class UserService {
         await this.appRepository.deleteMany({ owner: id });
         // this.avatarService.deleteAll(id);
         await this.userRepository.deleteMany({ id });
-        return { message: "Account deleted successfully" }
+        return { message: "Account deleted successfully" };
     }
 }
