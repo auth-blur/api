@@ -9,6 +9,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./user.entity";
+import { AppEntity} from "src/application/app.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
 import { SnowFlakeFactory, UserFlag, Type } from "../libs/snowflake";
@@ -27,6 +28,8 @@ export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: MongoRepository<UserEntity>,
+        @InjectRepository(AppEntity)
+        private readonly appRepository: MongoRepository<AppEntity>,
         @Inject(forwardRef(() => OAuthService))
         private readonly oauthService: OAuthService,
     ) {}
@@ -132,5 +135,14 @@ export class UserService {
             access_token,
             expiresIn
         }
+    }
+
+    async deleteUser(id: number): Promise<PicasscoResponse> {
+        const isExists = this.isExist(id);
+        if (!isExists) throw new NotFoundException("User not found");
+        await this.appRepository.deleteMany({ owner: id });
+        // this.avatarService.deleteAll(id);
+        await this.userRepository.deleteMany({ id });
+        return { message: "Account deleted successfully" }
     }
 }
