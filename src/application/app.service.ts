@@ -1,6 +1,5 @@
 import {
     Injectable,
-    Logger,
     NotFoundException,
     NotAcceptableException,
     Inject,

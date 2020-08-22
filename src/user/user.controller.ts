@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get, Patch, UseGuards, Body } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "./user.decorator";
 import { PicasscoResponse, PicasscoReqUser } from "picassco";
 import { OAuthGuard } from "src/oauth/oauth.guard";
+import { UserPatchDTO } from "./dto/patch.dto";
 
 @Controller("users")
 export class UserController {
@@ -13,4 +14,14 @@ export class UserController {
     async getMyData(@User() user: PicasscoReqUser): Promise<PicasscoResponse> {
         return { user };
     }
+
+    @Patch("@me")
+    @UseGuards(OAuthGuard)
+    async patchMyData(
+        @Body() body: UserPatchDTO,
+        @User() user: PicasscoReqUser
+    ): Promise<PicasscoResponse> {
+        return this.userService.patchUser(body, user);
+    }
+
 }

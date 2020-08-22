@@ -15,6 +15,7 @@ import { SnowFlakeFactory, UserFlag, Type } from "../libs/snowflake";
 import { OAuthService } from "../oauth/oauth.service";
 import * as argon2 from "argon2";
 import { plainToClass } from "class-transformer";
+import { PicasscoResponse, PicasscoReqUser } from "picassco";
 
 @Injectable()
 export class UserService {
@@ -100,5 +101,36 @@ export class UserService {
                 HttpStatus.BAD_REQUEST,
             );
         return user;
+    }
+
+    async patchUser({ username, mail, password, new_password }, user: PicasscoReqUser): Promise<PicasscoResponse> {
+        let u = await this.getUser(user.id);
+        u = await this.isCorrectPassword(u.mail, password);
+        const uUser = {};
+        if (username && username != u.username) {
+            const isUnique = await this.isUnique({ username, mail });
+            if (!isUnique) throw new ConflictException("This username is already registered",);
+            uUser["username"] = username;
+        }
+        if (mail && mail != u.mail) {
+            const isUnique = await this.isUnique({ username, mail });
+            if (!isUnique) throw new ConflictException("This mail is already registered",);
+            uUser["mail"] = mail;
+        }
+        if (new_password) {
+            if (new_password === password) throw new ConflictException("Must have a new password",);
+            uUser["password"] = new_password;
+        }
+        const newUser = await this.userRepository.findOneAndUpdate({ id: user.id }, uUser);
+        const { access_token, expiresIn } = this.oauthService.genToken({
+            id: user.id,
+            scope: this.oauthService.Scopes.root
+        });
+        return {
+            message: "Successfully edited",
+            newUser,
+            access_token,
+            expiresIn
+        }
     }
 }
