@@ -1,0 +1,3 @@
+[submodule "libs/Snowflake"]
+	path = libs/Snowflake
+	url = https://github.com/picass-co/Snowflake.git
