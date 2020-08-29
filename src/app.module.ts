@@ -37,4 +37,9 @@ import { AuthModule } from "./auth/auth.module";
     ],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
 })
-export class AppModule {}
+export class AppModule {
+    constructor() {
+        global.XMLHttpRequest = require("xhr2");
+        global.WebSocket = require("ws");
+    }
+}

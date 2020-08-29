@@ -8,6 +8,7 @@ import {
 import config from "./config";
 import { AppModule } from "./app.module";
 import * as morgan from "morgan";
+import * as multer from "fastify-multer";
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
@@ -17,7 +18,7 @@ async function bootstrap() {
     app.register(helmet);
     app.enableCors();
     app.use(morgan("dev"));
-
+    app.register(multer.contentParser);
     app.setGlobalPrefix(config().ROOT_PATH);
     app.useGlobalPipes(
         new ValidationPipe({
