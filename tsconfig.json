@@ -11,6 +11,14 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "typeRoots": ["src/@types","node_modules/@types"]
+    "typeRoots": ["node_modules/@types","src/@types"],
+    "paths": {
+      "@app/snowflake": [
+        "libs/Snowflake/src"
+      ],
+      "@app/snowflake/*": [
+        "libs/Snowflake/src/*"
+      ]
+    }
   }
 }

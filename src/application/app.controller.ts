@@ -3,6 +3,7 @@ import {
     Put,
     UseGuards,
     Get,
+    Patch,
     Param,
     Body,
     Delete,
@@ -14,6 +15,7 @@ import { OAuthGuard } from "src/oauth/oauth.guard";
 import { AppEntity } from "./app.entity";
 import { UserEntity } from "src/user/user.entity";
 import { CreateAppDTO } from "./dto/create-app.dto";
+import { AppPatchDTO } from "./dto/patch-app.dto";
 
 @Controller("apps")
 export class AppController {
@@ -49,5 +51,15 @@ export class AppController {
         @User() user: PicasscoReqUser,
     ): Promise<PicasscoResponse> {
         return this.appService.deleteApp({ id: paramID || bodyID, user });
+    }
+
+    @Patch("id/:id")
+    @UseGuards(OAuthGuard)
+    async patchApp(
+        @Param("id") id: number,
+        @Body() body: AppPatchDTO,
+        @User() user: PicasscoReqUser,
+    ): Promise<PicasscoResponse> {
+        return this.appService.patchApp(id, body, user);
     }
 }

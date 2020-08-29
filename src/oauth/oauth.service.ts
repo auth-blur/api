@@ -9,13 +9,13 @@ import {
 import * as Jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import * as cache from "memory-cache";
+import { ConfigService } from "@nestjs/config";
 import { CodePayload, PicasscoResponse } from "picassco";
 import { AuthorizationDTO } from "./dto/authorization.dto";
 import { AppService } from "src/application/app.service";
 import { TokenDTO } from "./dto/token.dto";
-import { SnowFlakeFactory, Type, AppFlag } from "src/libs/snowflake";
+import { SnowflakeService, Type, AppFlag } from "@app/snowflake";
 import { UserService } from "src/user/user.service";
-import { ConfigService } from "@nestjs/config";
 
 export enum Scope {
     IDENTIFY = 1 << 0,
@@ -43,7 +43,11 @@ export class OAuthService {
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly configService: ConfigService,
-    ) {}
+        private readonly snowflake: SnowflakeService,
+    ) {
+        this.snowflake.setType(Type.APP);
+        this.snowflake.setFlags([AppFlag.VERIFIED]);
+    }
 
     serializationScope(scopes: string[]): number {
         let res = 0;
@@ -172,11 +176,7 @@ export class OAuthService {
             };
         }
         if (grant_type === "password") {
-            const snowflake = new SnowFlakeFactory(
-                [AppFlag.VERIFIED],
-                Type.APP,
-            );
-            const SID = snowflake.serialization(client_id);
+            const SID = this.snowflake.serialization(client_id);
             if (
                 !SID.flags.includes("VERIFIED") &&
                 !SID.flags.includes("SYSTEM")

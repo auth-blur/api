@@ -1,6 +1,5 @@
 import {
     Injectable,
-    Logger,
     NotFoundException,
     NotAcceptableException,
     Inject,
@@ -10,22 +9,26 @@ import { MongoRepository } from "typeorm";
 import { AppEntity } from "./app.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { PicasscoResponse, PicasscoReqUser } from "picassco";
-import { SnowFlakeFactory, AppFlag, Type } from "src/libs/snowflake";
+import { SnowflakeService, AppFlag, Type } from "@app/snowflake";
 import { v4 as uuidv4 } from "uuid";
 import { UserService } from "src/user/user.service";
 import { UserEntity } from "src/user/user.entity";
 import { plainToClass } from "class-transformer";
 import { CreateAppDTO } from "./dto/create-app.dto";
+import { AppPatchDTO } from "./dto/patch-app.dto";
 
 @Injectable()
 export class AppService {
-    private snowflake = new SnowFlakeFactory([AppFlag.NORMAL], Type.APP);
     constructor(
         @InjectRepository(AppEntity)
         private readonly appRepository: MongoRepository<AppEntity>,
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
-    ) {}
+        private readonly snowflake: SnowflakeService,
+    ) {
+        this.snowflake.setType(Type.APP);
+        this.snowflake.setFlags([AppFlag.NORMAL]);
+    }
 
     async isExistApplication(
         id: number,
@@ -114,5 +117,19 @@ export class AppService {
         if (!isExist) throw new NotFoundException("Application Not Found");
         await this.appRepository.deleteOne(app);
         return { message: "Successfully Deleted Application" };
+    }
+
+    async patchApp(
+        id: number,
+        { name, description }: AppPatchDTO,
+        user: PicasscoReqUser,
+    ): Promise<PicasscoResponse> {
+        const app = this.getApplication({ id, user });
+        Object.assign(app, { name, description });
+        await this.appRepository.updateOne({ id }, app);
+        return Object.assign(
+            { message: "Application updated successfully" },
+            app,
+        );
     }
 }

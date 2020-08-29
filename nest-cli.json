@@ -1,4 +1,15 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "src",
+  "projects": {
+    "snowflake": {
+      "type": "library",
+      "root": "libs/Snowflake",
+      "entryFile": "index",
+      "sourceRoot": "libs/Snowflake/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/Snowflake/tsconfig.lib.json"
+      }
+    }
+  }
 }

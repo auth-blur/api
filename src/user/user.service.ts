@@ -11,24 +11,27 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./user.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
-import { SnowFlakeFactory, UserFlag, Type } from "../libs/snowflake";
+import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
 import { OAuthService } from "../oauth/oauth.service";
 import * as argon2 from "argon2";
 import { plainToClass } from "class-transformer";
+import { PicasscoReqUser, PicasscoResponse } from "picassco";
+import { AppEntity } from "src/application/app.entity";
 
 @Injectable()
 export class UserService {
-    private readonly snowflake = new SnowFlakeFactory(
-        [UserFlag.ACTIVE_USER],
-        Type.USER,
-    );
-
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: MongoRepository<UserEntity>,
+        @InjectRepository(AppEntity)
+        private readonly appRepository: MongoRepository<AppEntity>,
         @Inject(forwardRef(() => OAuthService))
         private readonly oauthService: OAuthService,
-    ) {}
+        private readonly snowflake: SnowflakeService,
+    ) {
+        this.snowflake.setType(Type.USER);
+        this.snowflake.setFlags([UserFlag.ACTIVE_USER]);
+    }
 
     async getUser(id: number): Promise<UserEntity> {
         const user = await this.userRepository.findOne({ id });
@@ -41,6 +44,7 @@ export class UserService {
     async getMyData(id: number): Promise<UserEntity> {
         const user = await this.userRepository.findOne({ id });
         if (!user) throw new NotFoundException("User Not Found");
+        console.log(user.pro);
         return Object.assign(plainToClass(UserEntity, user), {
             mail: user.mail,
             flags: (id & 0x1f000) >> 12,
@@ -100,5 +104,55 @@ export class UserService {
                 HttpStatus.BAD_REQUEST,
             );
         return user;
+    }
+    async patchUser(
+        { username, mail, password, new_password },
+        user: PicasscoReqUser,
+    ): Promise<PicasscoResponse> {
+        let u = await this.getUser(user.id);
+        u = await this.isCorrectPassword(u.mail, password);
+        const uUser = {};
+        if (username && username != u.username) {
+            const isUnique = await this.isUnique({ username, mail });
+            if (!isUnique)
+                throw new ConflictException(
+                    "This username is already registered",
+                );
+            uUser["username"] = username;
+        }
+        if (mail && mail != u.mail) {
+            const isUnique = await this.isUnique({ username, mail });
+            if (!isUnique)
+                throw new ConflictException("This mail is already registered");
+            uUser["mail"] = mail;
+        }
+        if (new_password) {
+            if (new_password === password)
+                throw new ConflictException("Must have a new password");
+            uUser["password"] = new_password;
+        }
+        const newUser = await this.userRepository.findOneAndUpdate(
+            { id: user.id },
+            uUser,
+        );
+        const { access_token, expiresIn } = this.oauthService.genToken({
+            id: user.id,
+            scope: this.oauthService.Scopes.root,
+        });
+        return {
+            message: "Successfully edited",
+            newUser,
+            access_token,
+            expiresIn,
+        };
+    }
+
+    async deleteUser(id: number): Promise<PicasscoResponse> {
+        const isExists = this.isExist(id);
+        if (!isExists) throw new NotFoundException("User not found");
+        await this.appRepository.deleteMany({ owner: id });
+        // this.avatarService.deleteAll(id);
+        await this.userRepository.deleteMany({ id });
+        return { message: "Account deleted successfully" };
     }
 }

@@ -1,5 +1,5 @@
 import { SetMetadata } from "@nestjs/common";
-import { Flag } from "src/libs/snowflake";
+import { Flag } from "@app/snowflake";
 
 export const Flags = (...flags: Flag[]): any =>
     SetMetadata(

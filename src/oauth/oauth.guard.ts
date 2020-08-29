@@ -11,7 +11,7 @@ import { Reflector } from "@nestjs/core";
 import * as Jwt from "jsonwebtoken";
 import Config from "src/config";
 import { TokenPayload } from "picassco";
-import { matchFlags } from "src/libs/snowflake";
+import { SnowflakeService } from "@app/snowflake";
 import { OAuthService } from "./oauth.service";
 
 @Injectable()
@@ -61,7 +61,8 @@ export class OAuthGuard implements CanActivate {
             },
         );
 
-        if (flags && !matchFlags(flags, req.user.id)) return false;
+        if (flags && !SnowflakeService.matchFlags(flags, req.user.id))
+            return false;
         if (scope && !this.oauthService.matchScope(scope, req.user.scope))
             return false;
         return true;
