@@ -35,7 +35,7 @@ declare module "picassco" {
 
     export interface TokenPayload {
         id: number;
-        scope: any;
+        scope: number;
     }
 
     export interface CodePayload {

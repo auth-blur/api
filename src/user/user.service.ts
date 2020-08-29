@@ -13,7 +13,7 @@ import { AppEntity } from "src/application/app.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
 import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
-import { OAuthService } from "../oauth/oauth.service";
+import { OAuthService, Scope } from "../oauth/oauth.service";
 import * as argon2 from "argon2";
 import { plainToClass } from "class-transformer";
 import { PicasscoResponse, PicasscoReqUser } from "picassco";
@@ -41,12 +41,12 @@ export class UserService {
         });
     }
 
-    async getMyData(id: number): Promise<UserEntity> {
+    async getMyData(id: number,scopes?:number): Promise<UserEntity> {
         const user = await this.userRepository.findOne({ id });
         if (!user) throw new NotFoundException("User Not Found");
         console.log(user.pro);
         return Object.assign(plainToClass(UserEntity, user), {
-            mail: user.mail,
+            mail: ((scopes&2) === 2 || (scopes&32)===32)?user.mail:undefined,
             flags: (id & 0x1f000) >> 12,
         });
     }

@@ -5,11 +5,14 @@ import { SignupDTO } from "./dto/signup.dto";
 import { SigninDTO } from "./dto/signin.dto";
 import { OAuthGuard } from "src/oauth/oauth.guard";
 import { User } from "src/user/user.decorator";
+import { Scopes } from "src/oauth/scope.decorator";
+import { Scope } from "src/oauth/oauth.service";
 
 @Controller("auth")
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
+    @Scopes(Scope.IDENTIFY)
     @Get("whoami")
     @UseGuards(OAuthGuard)
     whoami(@User() user: PicasscoReqUser): PicasscoReqUser {

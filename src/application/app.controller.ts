@@ -16,11 +16,14 @@ import { AppEntity } from "./app.entity";
 import { UserEntity } from "src/user/user.entity";
 import { CreateAppDTO } from "./dto/create-app.dto";
 import { AppPatchDTO } from "./dto/patch-app.dto";
+import { Scopes } from "src/oauth/scope.decorator";
+import { Scope } from "src/oauth/oauth.service";
 
 @Controller("apps")
 export class AppController {
     constructor(private readonly appService: AppService) {}
 
+    @Scopes(Scope.ROOT)
     @UseGuards(OAuthGuard)
     @Put()
     async createApplication(
@@ -35,6 +38,7 @@ export class AppController {
         return await this.appService.getApplication({ id });
     }
 
+    @Scopes(Scope.ROOT)
     @Get("@me")
     @UseGuards(OAuthGuard)
     async getUserApps(
@@ -43,6 +47,7 @@ export class AppController {
         return await this.appService.getAllApplications({ user });
     }
 
+    @Scopes(Scope.ROOT)
     @Delete(["id/:id", ""])
     @UseGuards(OAuthGuard)
     async delApp(
@@ -53,6 +58,7 @@ export class AppController {
         return this.appService.deleteApp({ id: paramID || bodyID, user });
     }
 
+    @Scopes(Scope.ROOT)
     @Patch("id/:id")
     @UseGuards(OAuthGuard)
     async patchApp(

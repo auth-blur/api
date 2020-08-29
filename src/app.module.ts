@@ -4,7 +4,6 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { RateLimiterModule, RateLimiterGuard } from "nestjs-rate-limit";
 import Config from "./config";
-import { PingModule } from "./ping/ping.module";
 import { UserModule } from "./user/user.module";
 import { OAuthModule } from "./oauth/oauth.module";
 import { ApplicationModule } from "./application/app.module";
@@ -31,7 +30,6 @@ import { AuthModule } from "./auth/auth.module";
             useNewUrlParser: true,
             autoLoadEntities: true,
         }),
-        PingModule,
         ApplicationModule,
         UserModule,
         OAuthModule,
