@@ -9,14 +9,14 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./user.entity";
+import { AppEntity } from "src/application/app.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
 import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
 import { OAuthService } from "../oauth/oauth.service";
 import * as argon2 from "argon2";
 import { plainToClass } from "class-transformer";
-import { PicasscoReqUser, PicasscoResponse } from "picassco";
-import { AppEntity } from "src/application/app.entity";
+import { PicasscoResponse, PicasscoReqUser } from "picassco";
 
 @Injectable()
 export class UserService {
