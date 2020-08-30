@@ -3,9 +3,10 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { UserModule } from "src/user/user.module";
 import { OAuthModule } from "src/oauth/oauth.module";
+import { SnowflakeModule } from "@app/snowflake";
 
 @Module({
-    imports: [UserModule, OAuthModule],
+    imports: [UserModule, OAuthModule, SnowflakeModule],
     controllers: [AuthController],
     providers: [AuthService],
 })

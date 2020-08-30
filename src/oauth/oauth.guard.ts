@@ -11,8 +11,9 @@ import { Reflector } from "@nestjs/core";
 import * as Jwt from "jsonwebtoken";
 import Config from "src/config";
 import { TokenPayload } from "picassco";
-import { SnowflakeService } from "@app/snowflake";
+import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
 import { OAuthService } from "./oauth.service";
+import * as cache from "memory-cache";
 
 @Injectable()
 export class OAuthGuard implements CanActivate {
@@ -20,8 +21,29 @@ export class OAuthGuard implements CanActivate {
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly oauthService: OAuthService,
+        private readonly snowflakeService: SnowflakeService,
         private reflector: Reflector,
-    ) {}
+    ) {
+        this.snowflakeService.setFlags([UserFlag.ACTIVE_USER]);
+        this.snowflakeService.setType(Type.USER);
+    }
+
+    errHandler(res: { [prop: string]: any }): void {
+        res.status(HttpStatus.UNAUTHORIZED).send({
+            err: {
+                message: "Unauthorized Request: User Not Found",
+            },
+        });
+    }
+
+    succHandler(
+        req: { [prop: string]: any },
+        data: { [prop: string]: any },
+    ): void {
+        req.user = Object.assign({}, data, {
+            SID: this.snowflakeService.serialization(data.id),
+        });
+    }
 
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
         const flags = this.reflector.get<number>("flags", ctx.getHandler());
@@ -48,16 +70,16 @@ export class OAuthGuard implements CanActivate {
                     return res
                         .status(HttpStatus.BAD_REQUEST)
                         .send({ err: { message: "Invalid access_token" } });
-                const isExist = await this.userService.isExist(decoded.id);
-                if (!isExist)
-                    return res.status(HttpStatus.UNAUTHORIZED).send({
-                        err: {
-                            message: "Unauthorized Request: User Not Found",
-                        },
-                    });
-                req.user = Object.assign({}, decoded, {
-                    flags: (decoded.id & 0x1f000) >> 12,
-                });
+                if (cache.get(decoded.id) === false)
+                    return this.errHandler(res);
+                else if (cache.get(decoded.id) === true)
+                    this.succHandler(req, decoded);
+                else {
+                    const isExist = await this.userService.isExist(decoded.id);
+                    cache.put(decoded.id, isExist, 6 * 24 * 60 * 60 * 1000);
+                    if (!isExist) return this.errHandler(res);
+                    this.succHandler(req, decoded);
+                }
             },
         );
 
