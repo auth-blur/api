@@ -1,7 +1,4 @@
-import {
-    registerDecorator,
-    ValidationOptions,
-} from "class-validator";
+import { registerDecorator, ValidationOptions } from "class-validator";
 import { SnowflakeService } from "@app/snowflake";
 
 export function IsSnowflake(options?: ValidationOptions) {

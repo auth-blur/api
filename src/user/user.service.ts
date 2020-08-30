@@ -65,6 +65,7 @@ export class UserService {
         password,
     }: SignupDTO): Promise<{ access_token: string; expiresIn: number }> {
         const isUnique = await this.isUnique({ mail, username });
+        console.log(isUnique);
         if (!isUnique)
             throw new ConflictException(
                 "This mail or username is already registered",
@@ -85,10 +86,11 @@ export class UserService {
         return { access_token, expiresIn };
     }
     async isUnique({ username, mail }): Promise<boolean> {
-        const matchUsers = await this.userRepository.count({
-            where: [{ username }, { mail }],
+        const matchUsers = await this.userRepository.find({
+            username,
+            mail,
         });
-        return matchUsers === 0;
+        return matchUsers.length == 0;
     }
     async isCorrectPassword(
         mail: string,
