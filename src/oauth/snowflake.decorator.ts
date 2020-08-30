@@ -1,7 +1,6 @@
 import {
     registerDecorator,
     ValidationOptions,
-    ValidationArguments,
 } from "class-validator";
 import { SnowflakeService } from "@app/snowflake";
 
@@ -13,7 +12,7 @@ export function IsSnowflake(options?: ValidationOptions) {
             propertyName,
             options,
             validator: {
-                validate(value: any, args: ValidationArguments) {
+                validate(value: any) {
                     if (typeof value === "number")
                         return SnowflakeService.isSnowflake(value);
                     else return false;
