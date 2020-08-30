@@ -1,7 +1,8 @@
-import { Length, IsEmail } from "class-validator";
+import { Length, IsEmail, IsAlphanumeric } from "class-validator";
 
 export abstract class UserPatchDTO {
     @Length(3, 32)
+    @IsAlphanumeric()
     username: string;
 
     @IsEmail()
