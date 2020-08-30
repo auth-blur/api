@@ -18,7 +18,7 @@ export class UserEntity {
     @ObjectIdColumn()
     _id: ObjectID;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, unique: true })
     username: string;
 
     @Exclude()
