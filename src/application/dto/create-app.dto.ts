@@ -1,6 +1,6 @@
 import { Length } from "class-validator";
 
 export abstract class CreateAppDTO {
-    @Length(3, 10)
+    @Length(3, 32)
     name: string;
 }
