@@ -1,8 +1,0 @@
-POST https://3000-faf19886-1bd3-412e-bb0c-12af7c2254d0.ws-eu01.gitpod.io/v1/auth/signup
-Content-Type: application/json
-
-{
-    "username": "SystemTester0",
-    "mail": "00.testers@picass.co",
-    "password": "2123123sdfwe"
-}

@@ -38,7 +38,7 @@ export class AvatarController {
     }
 
     @Get("/:userID")
-    @Header("Content-Type", "image/webp")
+    @Header("Content-Type", "image/webp; application/json")
     async getUserAvatar(
         @Param("userID") userID: number,
         @Query("size") size?: number,
@@ -47,7 +47,7 @@ export class AvatarController {
     }
 
     @Get("/:userID/:avatarID")
-    @Header("Content-Type", "image/webp")
+    @Header("Content-Type", "image/webp; application/json")
     async getAvatar(
         @Param() params: GetAvatarDto,
         @Query("size") size?: number,
@@ -57,7 +57,7 @@ export class AvatarController {
 
     @UseGuards(OAuthGuard)
     @Get("/@me")
-    @Header("Content-Type", "image/webp")
+    @Header("Content-Type", "image/webp; application/json")
     async getMyAvatar(
         @User() user: PicasscoReqUser,
         @Query("size") size?: number,
@@ -67,7 +67,7 @@ export class AvatarController {
 
     @UseGuards(OAuthGuard)
     @Get("/@me/:avatarID")
-    @Header("Content-Type", "image/webp")
+    @Header("Content-Type", "image/webp; application/json")
     async getMyAvatarWithID(
         @User() user: PicasscoReqUser,
         @Param("avatarID") avatarID: number,
