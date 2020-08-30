@@ -8,6 +8,7 @@ import { UserModule } from "./user/user.module";
 import { OAuthModule } from "./oauth/oauth.module";
 import { ApplicationModule } from "./application/app.module";
 import { AuthModule } from "./auth/auth.module";
+import { AvatarModule } from "./avatar/avatar.module";
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { AuthModule } from "./auth/auth.module";
         }),
         ApplicationModule,
         UserModule,
+        AvatarModule,
         OAuthModule,
         AuthModule,
     ],

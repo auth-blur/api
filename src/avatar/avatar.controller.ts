@@ -32,47 +32,54 @@ export class AvatarController {
     }
 
     @Get("/:userID")
-    @Header("Content-Type","image/webp")
+    @Header("Content-Type", "image/webp")
     async getUserAvatar(
         @Param("userID") userID: number,
-        @Query("size") size?: number
+        @Query("size") size?: number,
     ): Promise<Buffer> {
-        return await this.avatarService.get({ userID,size });
+        return await this.avatarService.get({ userID, size });
     }
 
     @Get("/:userID/:avatarID")
-    @Header("Content-Type","image/webp")
-    async getAvatar(@Param() params: GetAvatarDto,@Query("size") size?: number): Promise<Buffer> {
-        return await this.avatarService.get({...params,size});
+    @Header("Content-Type", "image/webp")
+    async getAvatar(
+        @Param() params: GetAvatarDto,
+        @Query("size") size?: number,
+    ): Promise<Buffer> {
+        return await this.avatarService.get({ ...params, size });
     }
 
     @UseGuards(OAuthGuard)
     @Get("/@me")
-    @Header("Content-Type","image/webp")
-    async getMyAvatar(@User() user: PicasscoReqUser,@Query("size") size?: number): Promise<Buffer> {
-        return await this.avatarService.get({ userID: user.id,size })
+    @Header("Content-Type", "image/webp")
+    async getMyAvatar(
+        @User() user: PicasscoReqUser,
+        @Query("size") size?: number,
+    ): Promise<Buffer> {
+        return await this.avatarService.get({ userID: user.id, size });
     }
 
     @UseGuards(OAuthGuard)
     @Get("/@me/:avatarID")
-    @Header("Content-Type","image/webp")
+    @Header("Content-Type", "image/webp")
     async getMyAvatarWithID(
         @User() user: PicasscoReqUser,
         @Param("avatarID") avatarID: number,
-        @Query("size") size?: number
+        @Query("size") size?: number,
     ): Promise<Buffer> {
-        return await this.avatarService.get({ userID: user.id, avatarID,size });
+        return await this.avatarService.get({
+            userID: user.id,
+            avatarID,
+            size,
+        });
     }
 
-    @Delete("/@me/:avatarID",)
+    @Delete("/@me/:avatarID")
     @UseGuards(OAuthGuard)
     async delMyAvatar(
         @Param("avatarID") avatarID: number,
         @User() user: PicasscoReqUser,
     ): Promise<PicasscoResponse> {
-        return await this.avatarService.delete(
-            user.id,
-            avatarID,
-        );
+        return await this.avatarService.delete(user.id, avatarID);
     }
 }

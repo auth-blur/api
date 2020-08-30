@@ -132,7 +132,11 @@ export class AvatarService {
         }
     }
 
-    async get({ userID, avatarID,size }: GetAvatarDto&{size?:number}): Promise<Buffer> {
+    async get({
+        userID,
+        avatarID,
+        size,
+    }: GetAvatarDto & { size?: number }): Promise<Buffer> {
         let AvatarRef = this.FirebaseStorage.child("default.png");
         if (!avatarID) {
             const user = await this.userService.getUser(userID);
@@ -148,10 +152,10 @@ export class AvatarService {
         try {
             const AvatarURI = await AvatarRef.getDownloadURL();
             const avatarBuff = (await got(AvatarURI)).rawBody;
-            if(size&& (16 < size && size<1024))
+            if (size && 16 < size && size < 1024)
                 return sharp(avatarBuff)
-                .resize(size,size)
-                .toBuffer()
+                    .resize(size, size)
+                    .toBuffer();
             else return avatarBuff;
         } catch (e) {
             Logger.log("Get Avatar", e);

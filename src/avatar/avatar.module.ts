@@ -8,7 +8,12 @@ import { UserModule } from "src/user/user.module";
 import { OAuthModule } from "src/oauth/oauth.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([UserEntity]),UserModule,SnowflakeModule,OAuthModule],
+    imports: [
+        TypeOrmModule.forFeature([UserEntity]),
+        UserModule,
+        SnowflakeModule,
+        OAuthModule,
+    ],
     controllers: [AvatarController],
     providers: [AvatarService],
 })
