@@ -1,14 +1,14 @@
-import { ValidateIf, Equals, IsFQDN } from "class-validator";
-import { SnowflakeService } from "@app/snowflake";
+import { Equals, IsFQDN } from "class-validator";
+import { IsSnowflake } from "../snowflake.decorator";
 
 export abstract class AuthorizationDTO {
     @Equals("code")
     type: string;
 
-    @ValidateIf(id => SnowflakeService.isSnowflake(id))
+    @IsSnowflake()
     client_id: number;
 
-    @ValidateIf(id => SnowflakeService.isSnowflake(id))
+    @IsSnowflake()
     user_id: number;
 
     @IsFQDN()
