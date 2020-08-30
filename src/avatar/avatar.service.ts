@@ -65,7 +65,12 @@ export class AvatarService {
     }
 
     async uploadUser(
-        file: { [prop: string]: any },
+        file: {
+            fieldname: string;
+            originalname: string;
+            encoding: string;
+            buffer: Buffer;
+        },
         user: PicasscoReqUser,
     ): Promise<PicasscoResponse> {
         const userAvatars = await this.getAll(user.id);
@@ -79,9 +84,9 @@ export class AvatarService {
         const AvatarRef = this.FirebaseStorage.child(
             `${user.id}/${avatarID}.webp`,
         );
-        await this.userRepository.findOneAndUpdate(
+        await this.userRepository.updateOne(
             { id: user.id },
-            { avatar: avatarID },
+            { $set: { avatar: avatarID } },
         );
         const buff = await sharp(avatar)
             .resize(1024, 1024)

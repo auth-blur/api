@@ -26,7 +26,13 @@ export class AvatarController {
     @UseGuards(OAuthGuard)
     async uploadAvatar(
         @User() user: PicasscoReqUser,
-        @UploadedFile() file: unknown,
+        @UploadedFile()
+        file: {
+            fieldname: string;
+            originalname: string;
+            encoding: string;
+            buffer: Buffer;
+        },
     ): Promise<PicasscoResponse> {
         return await this.avatarService.uploadUser(file, user);
     }
