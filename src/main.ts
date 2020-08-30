@@ -1,6 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
-import helmet from "fastify-helmet";
+import * as helmet from "fastify-helmet";
 import {
     FastifyAdapter,
     NestFastifyApplication,
@@ -15,10 +15,12 @@ async function bootstrap() {
         AppModule,
         new FastifyAdapter(),
     );
-    app.register(helmet);
+    app.getHttpAdapter()
+        .getInstance()
+        .register(multer.contentParser)
+        .register(helmet);
     app.enableCors();
     app.use(morgan("dev"));
-    app.register(multer.contentParser);
     app.setGlobalPrefix(config().ROOT_PATH);
     app.useGlobalPipes(
         new ValidationPipe({
