@@ -25,7 +25,7 @@ export class UserController {
     async getMyData(
         @User() user: PicasscoReqUser,
     ): Promise<PicasscoResponse | UserEntity> {
-        return await this.userService.getMyData(user.id,user.scope);
+        return await this.userService.getMyData(user.id, user.scope);
     }
 
     @Scopes(Scope.ROOT)

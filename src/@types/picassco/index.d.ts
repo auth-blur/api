@@ -1,4 +1,6 @@
 declare module "picassco" {
+    import { ISnowflake } from "@app/snowflake";
+
     export type TConfig = {
         PORT: number;
         ROOT_PATH: string;
@@ -25,14 +27,15 @@ declare module "picassco" {
         [propName: string]: unknown;
     }
 
-    export interface PicasscoRequest extends Express.Request {
+    export interface PicasscoRequest {
         user?: PicasscoReqUser;
+        [prop: string]: any;
     }
 
     export interface PicasscoReqUser extends TokenPayload {
         flags: number;
+        SID: ISnowflake;
     }
-
     export interface TokenPayload {
         id: number;
         scope: number;
