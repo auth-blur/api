@@ -21,10 +21,9 @@ app = "red-cap"
     timeout = 2000
   
   [[services.http_checks]]
-    interval = 10000
+    interval = 120000
     method = "get"
     path = "/v1/health"
     timeout = 2000
     tls_skip_verify = true
     [services.http_checks.headers]
-    

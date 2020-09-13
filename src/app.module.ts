@@ -9,6 +9,7 @@ import { OAuthModule } from "./oauth/oauth.module";
 import { ApplicationModule } from "./application/app.module";
 import { AuthModule } from "./auth/auth.module";
 import { AvatarModule } from "./avatar/avatar.module";
+import { HealthModule } from "./health/health.module";
 
 @Module({
     imports: [
@@ -25,7 +26,7 @@ import { AvatarModule } from "./avatar/avatar.module";
             type: "mongodb",
             url: Config().MONGODB_URI,
             database: "Picassco",
-            synchronize: true,
+            synchronize: !Config().isProd,
             logger: "debug",
             useUnifiedTopology: true,
             useNewUrlParser: true,
@@ -36,6 +37,7 @@ import { AvatarModule } from "./avatar/avatar.module";
         AvatarModule,
         OAuthModule,
         AuthModule,
+        HealthModule,
     ],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
 })
