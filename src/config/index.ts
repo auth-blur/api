@@ -5,6 +5,7 @@ export default (): TConfig => ({
     ROOT_PATH: process.env.ROOT_PATH || "/v1",
     MONGODB_URI: process.env.MONGODB_URI,
     SECRET_KEY: process.env.SECRET_KEY,
+    isProd: process.env.NODE_ENV === "production",
     App: {
         id: parseInt(process.env.APP_ID),
         secret: process.env.APP_SECRET,

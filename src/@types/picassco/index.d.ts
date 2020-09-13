@@ -6,6 +6,7 @@ declare module "picassco" {
         ROOT_PATH: string;
         MONGODB_URI: string;
         SECRET_KEY: string;
+        isProd: boolean;
         App: {
             id: number;
             secret: string;

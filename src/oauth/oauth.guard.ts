@@ -6,14 +6,14 @@ import {
     ExecutionContext,
     HttpStatus,
 } from "@nestjs/common";
-import { UserService } from "src/user/user.service";
+import { TokenPayload } from "picassco";
+import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import * as Jwt from "jsonwebtoken";
-import Config from "src/config";
-import { TokenPayload } from "picassco";
-import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
-import { OAuthService } from "./oauth.service";
 import * as cache from "memory-cache";
+import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
+import { UserService } from "src/user/user.service";
+import { OAuthService } from "./oauth.service";
 
 @Injectable()
 export class OAuthGuard implements CanActivate {
@@ -22,6 +22,7 @@ export class OAuthGuard implements CanActivate {
         private readonly userService: UserService,
         private readonly oauthService: OAuthService,
         private readonly snowflakeService: SnowflakeService,
+        private readonly configService: ConfigService,
         private reflector: Reflector,
     ) {
         this.snowflakeService.setFlags([UserFlag.ACTIVE_USER]);
@@ -64,7 +65,7 @@ export class OAuthGuard implements CanActivate {
 
         await Jwt.verify(
             token,
-            Config().SECRET_KEY,
+            this.configService.get<string>("SECRET_KEY"),
             async (err, decoded: TokenPayload) => {
                 if (err)
                     return res
