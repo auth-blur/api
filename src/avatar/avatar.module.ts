@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { AvatarController } from "./avatar.controller";
 import { AvatarService } from "./avatar.service";
 import { SnowflakeModule } from "@app/snowflake";
@@ -10,7 +10,7 @@ import { OAuthModule } from "src/oauth/oauth.module";
 @Module({
     imports: [
         TypeOrmModule.forFeature([UserEntity]),
-        UserModule,
+        forwardRef(() => UserModule),
         SnowflakeModule,
         OAuthModule,
     ],

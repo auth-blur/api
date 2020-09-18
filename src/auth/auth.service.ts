@@ -35,7 +35,10 @@ export class AuthService {
     }: SigninDTO): Promise<
         PicasscoResponse & { access_token: string; expiresIn: number }
     > {
-        const {id,secret} = this.configService.get<{id:number;secret:string}>("App")
+        const { id, secret } = this.configService.get<{
+            id: number;
+            secret: string;
+        }>("App");
         const { access_token, expiresIn } = await this.oauthService.getToken({
             client_id: id,
             client_secret: secret,

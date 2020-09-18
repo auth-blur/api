@@ -44,9 +44,4 @@ export class UserController {
     async deleteMe(@User() user: PicasscoReqUser): Promise<PicasscoResponse> {
         return this.userService.deleteUser(user.id);
     }
-
-    // @Get("/snowflake")
-    // getSnowflake():number {
-    //     return this.userService.getSnowflake()
-    // }
 }

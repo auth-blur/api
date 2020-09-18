@@ -4,6 +4,8 @@ import {
     Logger,
     InternalServerErrorException,
     NotAcceptableException,
+    Inject,
+    forwardRef,
 } from "@nestjs/common";
 import { SnowflakeService, Type, AvatarFlag } from "@app/snowflake";
 import { PicasscoReqUser, PicasscoResponse } from "picassco";
@@ -29,6 +31,7 @@ export class AvatarService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: MongoRepository<UserEntity>,
+        @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly snowflake: SnowflakeService,
         private readonly configService: ConfigService,
@@ -181,8 +184,8 @@ export class AvatarService {
         }
     }
 
-    async deleteAll(user: PicasscoReqUser): Promise<PicasscoResponse> {
-        const UserRef = this.FirebaseStorage.child(user.id.toString());
+    async deleteAll(id: number): Promise<PicasscoResponse> {
+        const UserRef = this.FirebaseStorage.child(id.toString());
         const itemRefs = (await UserRef.listAll()).items;
         try {
             await itemRefs.forEach(async ref => await ref.delete());

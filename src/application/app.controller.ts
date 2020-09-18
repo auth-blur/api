@@ -7,7 +7,7 @@ import {
     Param,
     Body,
     Delete,
-    Post
+    Post,
 } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { PicasscoResponse, PicasscoReqUser } from "picassco";

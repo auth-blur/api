@@ -12,8 +12,9 @@ import { UserEntity } from "./user.entity";
 import { AppEntity } from "src/application/app.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
-import { SnowflakeService, UserFlag, Type, /* AppFlag */ } from "@app/snowflake";
+import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
 import { OAuthService } from "../oauth/oauth.service";
+import { AvatarService } from "../avatar/avatar.service";
 import * as argon2 from "argon2";
 import { plainToClass } from "class-transformer";
 import { PicasscoResponse, PicasscoReqUser } from "picassco";
@@ -28,6 +29,8 @@ export class UserService {
         @Inject(forwardRef(() => OAuthService))
         private readonly oauthService: OAuthService,
         private readonly snowflake: SnowflakeService,
+        @Inject(forwardRef(() => AvatarService))
+        private readonly avatarService: AvatarService,
     ) {}
 
     async getUser(id: number): Promise<UserEntity> {
@@ -153,14 +156,8 @@ export class UserService {
         const isExists = this.isExist(id);
         if (!isExists) throw new NotFoundException("User not found");
         await this.appRepository.deleteMany({ owner: id });
-        // this.avatarService.deleteAll(id);
+        this.avatarService.deleteAll(id);
         await this.userRepository.deleteMany({ id });
         return { message: "Account deleted successfully" };
     }
-
-    // getSnowflake(): number {
-    //     this.snowflake.setType(Type.APP);
-    //     this.snowflake.setFlags([AppFlag.NORMAL, AppFlag.SYSTEM, AppFlag.VERIFIED]);
-    //     return this.snowflake.next();
-    // }
 }
