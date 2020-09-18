@@ -12,7 +12,7 @@ import { UserEntity } from "./user.entity";
 import { AppEntity } from "src/application/app.entity";
 import { SignupDTO } from "../auth/dto/signup.dto";
 import { MongoRepository } from "typeorm";
-import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
+import { SnowflakeService, UserFlag, Type, /* AppFlag */ } from "@app/snowflake";
 import { OAuthService } from "../oauth/oauth.service";
 import * as argon2 from "argon2";
 import { plainToClass } from "class-transformer";
@@ -28,10 +28,7 @@ export class UserService {
         @Inject(forwardRef(() => OAuthService))
         private readonly oauthService: OAuthService,
         private readonly snowflake: SnowflakeService,
-    ) {
-        this.snowflake.setType(Type.USER);
-        this.snowflake.setFlags([UserFlag.ACTIVE_USER]);
-    }
+    ) {}
 
     async getUser(id: number): Promise<UserEntity> {
         const user = await this.userRepository.findOne({ id });
@@ -44,7 +41,6 @@ export class UserService {
     async getMyData(id: number, scopes?: number): Promise<UserEntity> {
         const user = await this.userRepository.findOne({ id });
         if (!user) throw new NotFoundException("User Not Found");
-        console.log(user.pro);
         return Object.assign(plainToClass(UserEntity, user), {
             mail:
                 (scopes & 2) === 2 || (scopes & 32) === 32
@@ -64,8 +60,9 @@ export class UserService {
         username,
         password,
     }: SignupDTO): Promise<{ access_token: string; expiresIn: number }> {
+        this.snowflake.setType(Type.USER);
+        this.snowflake.setFlags([UserFlag.ACTIVE_USER]);
         const isUnique = await this.isUnique({ mail, username });
-        console.log(isUnique);
         if (!isUnique)
             throw new ConflictException(
                 "This mail or username is already registered",
@@ -160,4 +157,10 @@ export class UserService {
         await this.userRepository.deleteMany({ id });
         return { message: "Account deleted successfully" };
     }
+
+    // getSnowflake(): number {
+    //     this.snowflake.setType(Type.APP);
+    //     this.snowflake.setFlags([AppFlag.NORMAL, AppFlag.SYSTEM, AppFlag.VERIFIED]);
+    //     return this.snowflake.next();
+    // }
 }

@@ -25,10 +25,7 @@ export class AppService {
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly snowflake: SnowflakeService,
-    ) {
-        this.snowflake.setType(Type.APP);
-        this.snowflake.setFlags([AppFlag.NORMAL]);
-    }
+    ) {}
 
     async isExistApplication(
         id: number,
@@ -87,6 +84,8 @@ export class AppService {
     }: CreateAppDTO & { user: PicasscoReqUser }): Promise<
         PicasscoResponse & { app: AppEntity }
     > {
+        this.snowflake.setType(Type.APP);
+        this.snowflake.setFlags([AppFlag.NORMAL]);
         const userAppsLength = await this.appRepository.count({
             owner: user.id,
         });

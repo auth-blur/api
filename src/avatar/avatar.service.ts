@@ -32,9 +32,7 @@ export class AvatarService {
         private readonly userService: UserService,
         private readonly snowflake: SnowflakeService,
         private readonly configService: ConfigService,
-    ) {
-        this.snowflake.setType(Type.AVATAR);
-    }
+    ) {}
 
     qualityCheck(
         user: PicasscoReqUser,
@@ -73,6 +71,8 @@ export class AvatarService {
         },
         user: PicasscoReqUser,
     ): Promise<PicasscoResponse> {
+        this.snowflake.setType(Type.AVATAR);
+        this.snowflake.setFlags([]);
         const userAvatars = await this.getAll(user.id);
         const { avatarLimit, quality } = this.qualityCheck(user);
         if (userAvatars.length >= avatarLimit)
@@ -108,6 +108,7 @@ export class AvatarService {
         app: any;
         file: any;
     }): Promise<PicasscoResponse> {
+        this.snowflake.setType(Type.AVATAR);
         if (user.id != app.owner.id)
             throw new NotFoundException("App Not Found");
         if (app.avatar) await this.delete(app.id, app.avatar);

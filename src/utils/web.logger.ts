@@ -20,7 +20,7 @@ export const Handler = async (req: FastifyRequest, res: FastifyReply, next:()=>v
     };
     cache.put(`web.logs.${data.id}`, data, 6 * 3600 * 1000);
     Logger.debug(
-        `${data.id} - {${data.url}, ${data.method}:${data.status}}`,
+        `{${data.url}, ${data.method}:${data.status}}`,
         "Web-Log",
     );
 }

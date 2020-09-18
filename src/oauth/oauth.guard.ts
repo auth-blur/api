@@ -11,7 +11,7 @@ import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import * as Jwt from "jsonwebtoken";
 import * as cache from "memory-cache";
-import { SnowflakeService, UserFlag, Type } from "@app/snowflake";
+import { SnowflakeService, Type } from "@app/snowflake";
 import { UserService } from "src/user/user.service";
 import { OAuthService } from "./oauth.service";
 
@@ -24,10 +24,7 @@ export class OAuthGuard implements CanActivate {
         private readonly snowflakeService: SnowflakeService,
         private readonly configService: ConfigService,
         private reflector: Reflector,
-    ) {
-        this.snowflakeService.setFlags([UserFlag.ACTIVE_USER]);
-        this.snowflakeService.setType(Type.USER);
-    }
+    ) {}
 
     errHandler(res: { [prop: string]: any }): void {
         res.status(HttpStatus.UNAUTHORIZED).send({
@@ -41,6 +38,7 @@ export class OAuthGuard implements CanActivate {
         req: { [prop: string]: any },
         data: { [prop: string]: any },
     ): void {
+        this.snowflakeService.setType(Type.USER);
         req.user = Object.assign({}, data, {
             SID: this.snowflakeService.serialization(data.id),
         });

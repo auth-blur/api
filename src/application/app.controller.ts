@@ -7,6 +7,7 @@ import {
     Param,
     Body,
     Delete,
+    Post
 } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { PicasscoResponse, PicasscoReqUser } from "picassco";
@@ -26,6 +27,7 @@ export class AppController {
     @Scopes(Scope.ROOT)
     @UseGuards(OAuthGuard)
     @Put()
+    @Post()
     async createApplication(
         @Body() appBody: CreateAppDTO,
         @User() user: PicasscoReqUser,

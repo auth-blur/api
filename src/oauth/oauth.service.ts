@@ -44,10 +44,7 @@ export class OAuthService {
         private readonly userService: UserService,
         private readonly configService: ConfigService,
         private readonly snowflake: SnowflakeService,
-    ) {
-        this.snowflake.setType(Type.APP);
-        this.snowflake.setFlags([AppFlag.VERIFIED]);
-    }
+    ) {}
 
     serializationScope(scopes: string[]): number {
         let res = 0;
@@ -176,6 +173,8 @@ export class OAuthService {
             };
         }
         if (grant_type === "password") {
+            this.snowflake.setType(Type.APP);
+            this.snowflake.setFlags([AppFlag.VERIFIED]);
             const SID = this.snowflake.serialization(client_id);
             if (
                 !SID.flags.includes("VERIFIED") &&
