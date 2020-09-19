@@ -28,9 +28,10 @@ export class UserService {
         private readonly appRepository: MongoRepository<AppEntity>,
         @Inject(forwardRef(() => OAuthService))
         private readonly oauthService: OAuthService,
-        private readonly snowflake: SnowflakeService,
         @Inject(forwardRef(() => AvatarService))
         private readonly avatarService: AvatarService,
+        
+        private readonly snowflake: SnowflakeService,
     ) {}
 
     async getUser(id: number): Promise<UserEntity> {
