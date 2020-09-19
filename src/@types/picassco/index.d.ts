@@ -11,6 +11,9 @@ declare module "picassco" {
             id: number;
             secret: string;
         };
+        flyioToken: string;
+        mail: string;
+        sgKey: string;
         Firebase: {
             apiKey: string;
             authDomain: string;
