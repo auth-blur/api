@@ -8,19 +8,21 @@ import {
 } from "@nestjs/platform-fastify";
 import config from "./config";
 import { AppModule } from "./app.module";
-import { Handler as WebLogHandler } from "./utils/web.logger";
+import { HttpCacheMiddleware } from "./common/http-cache/http-cache.middleware";
+import { HttpExceptionFilter } from "./common/http-cache/http-exception.filter";
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter(),
     );
+    app.use(HttpCacheMiddleware);
     app.getHttpAdapter()
         .getInstance()
         .register(multer.contentParser)
         .register(helmet);
     app.enableCors();
-    app.use(WebLogHandler);
+    app.useGlobalFilters(new HttpExceptionFilter());
     app.setGlobalPrefix(config().ROOT_PATH);
     app.useGlobalPipes(
         new ValidationPipe({
