@@ -2,7 +2,6 @@
   "name": "api",
   "version": "0.0.1",
   "description": "",
-  "author": "",
   "private": true,
   "license": "MPL-2.0 License",
   "scripts": {
@@ -20,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "lib:rebuild": "node-gyp rebuild",
-    "lib:build": "node-gyp configure && node-gyp build"
+    "lib:build": "node-gyp configure && node-gyp build",
+    "prettier:watch": "onchange \"{src,libs,test}/**/*.ts\" -- prettier --write \"{{changed}}\""
   },
   "bugs": {
     "url": "https://github.com/picass-co/issues",
@@ -52,14 +52,14 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "sharp": "^0.26.0",
+    "sharp": "^0.26.1",
     "typeorm": "^0.2.25",
     "uuid": "^8.3.0",
     "ws": "^7.3.1",
     "xhr2": "^0.2.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^7.0.0",
+    "@nestjs/cli": "^7.5.1",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.4.3",
     "@types/argon2": "^0.15.0",
@@ -86,7 +86,7 @@
     "jest": "26.0.1",
     "memory-cache": "^0.2.0",
     "node-gyp": "^7.1.0",
-    "npm": "^6.14.8",
+    "onchange": "^7.0.2",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
     "ts-jest": "26.1.0",
@@ -114,7 +114,8 @@
     ],
     "moduleNameMapper": {
       "@app/snowflake/(.*)": "<rootDir>/libs/Snowflake/src/$1",
-      "@app/snowflake": "<rootDir>/libs/Snowflake/src"
+      "@app/snowflake": "<rootDir>/libs/Snowflake/src",
+      "(.*)": "<rootDir>/$1"
     }
   }
 }
