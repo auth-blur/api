@@ -1,17 +1,16 @@
 import { TConfig } from "picassco";
-import * as fs from "fs"
+import * as fs from "fs";
 
 const isProd = process.env.NODE_ENV === "production";
-if(!isProd) {
+if (isProd) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const {parse} = require("dotenv")
+    const { parse } = require("dotenv");
     fs.readdirSync("./")
-        .filter(f=>f.match(/^([a-zA-Z]{1,16}\.)+(prod|production).env$/g))
-        .forEach(f=>{
-            const env = parse(fs.readFileSync(`./${f}`))
-            for(const k in env) 
-                process.env[k] = env[k]
-        })
+        .filter(f => f.match(/^([a-zA-Z]{1,16}\.)+(prod|production).env$/g))
+        .forEach(f => {
+            const env = parse(fs.readFileSync(`./${f}`));
+            for (const k in env) process.env[k] = env[k];
+        });
 }
 
 export default (): TConfig => ({
