@@ -4,14 +4,16 @@
     "json",
     "ts"
   ],
-  "rootDir": ".",
+  "rootDir": "..",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
+  "modulePaths": ["<rootDir>/libs/","<rootDir>/src/"],
   "moduleNameMapper": {
-    "@app/my-library/(.*)": "<rootDir>/../libs/my-library/src/$1",
-    "@app/my-library": "<rootDir>/../libs/my-library/src"
+    "^@app/snowflake/(.*)$": "<rootDir>/libs/Snowflake/src/$1",
+    "@app/snowflake": "<rootDir>/libs/Snowflake/src",
+    "^src/(.*)$": "<rootDir>/src/$1"
   }
 }
