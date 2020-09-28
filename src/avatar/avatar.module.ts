@@ -16,6 +16,6 @@ import { OAuthModule } from "src/oauth/oauth.module";
     ],
     controllers: [AvatarController],
     providers: [AvatarService],
-    exports: [TypeOrmModule,AvatarService]
+    exports: [TypeOrmModule, AvatarService],
 })
 export class AvatarModule {}

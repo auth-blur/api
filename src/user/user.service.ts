@@ -30,7 +30,7 @@ export class UserService {
         private readonly oauthService: OAuthService,
         @Inject(forwardRef(() => AvatarService))
         private readonly avatarService: AvatarService,
-        
+
         private readonly snowflake: SnowflakeService,
     ) {}
 
