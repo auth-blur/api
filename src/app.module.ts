@@ -25,7 +25,7 @@ import { HealthModule } from "./health/health.module";
         TypeOrmModule.forRoot({
             type: "mongodb",
             url: Config().MONGODB_URI,
-            database: "Picassco",
+            database: "picassco",
             synchronize: !Config().isProd,
             logger: "debug",
             useUnifiedTopology: true,
