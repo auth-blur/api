@@ -10,6 +10,7 @@ import { ApplicationModule } from "./application/app.module";
 import { AuthModule } from "./auth/auth.module";
 import { AvatarModule } from "./avatar/avatar.module";
 import { HealthModule } from "./health/health.module";
+import { MailModule } from "./mails/mail.module";
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { HealthModule } from "./health/health.module";
         OAuthModule,
         AuthModule,
         HealthModule,
+        MailModule
     ],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
 })
