@@ -4,18 +4,17 @@ WORKDIR /app
 
 RUN apk add python make gcc g++
 
-COPY package.json package-lock.json binding.gyp ./
-COPY libs ./
+COPY package.json package-lock.json binding.gyp nest-cli.json ./
+COPY tsconfig.build.json tsconfig.json ./
+
+COPY libs libs
+COPY src src
 
 RUN npm i
 
 RUN ls
 
-COPY build node_modules ./
-
 RUN npm run build
-
-COPY dist .
 
 ENV NODE_ENV=production
 ENV PORT=8080
