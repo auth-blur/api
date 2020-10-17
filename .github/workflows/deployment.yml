@@ -18,7 +18,7 @@ jobs:
             - uses: actions/checkout@v2
             - uses: wei/curl@master
               with:
-                args: --upload-file .env ${{ secrets.ENV }}
+                args: --upload-file prod.env ${{ secrets.URL_ENV }}
             - uses: superfly/flyctl-actions@1.1
               with:
                   args: "deploy"
