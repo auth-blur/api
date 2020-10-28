@@ -1,19 +1,16 @@
-FROM node:current-alpine
+FROM node:lts-alpine
 
 WORKDIR /app
 
 RUN apk add python make gcc g++
 
-COPY package.json package-lock.json binding.gyp nest-cli.json ./
+COPY package.json binding.gyp nest-cli.json ./
 COPY tsconfig.build.json tsconfig.json ./
 
 COPY libs libs
 COPY src src
 COPY scripts scripts
 
-RUN npm run lib:build
-
-RUN ls
 RUN npm i
 
 RUN npm run build
