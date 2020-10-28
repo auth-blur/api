@@ -17,10 +17,7 @@ export class MailService {
 
     async postEarlyList(address: string): Promise<PicasscoResponse> {
         if (await this.isExistEarlyList(address))
-            throw new BadRequestException(
-                {},
-                "This mail is already registered",
-            );
+            throw new BadRequestException("This mail is already registered");
 
         const mailEntity = this.earlyMailEntity.create({
             mail: address,

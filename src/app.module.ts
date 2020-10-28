@@ -39,7 +39,7 @@ import { MailModule } from "./mails/mail.module";
         OAuthModule,
         AuthModule,
         HealthModule,
-        MailModule
+        MailModule,
     ],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
 })
