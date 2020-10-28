@@ -13,6 +13,8 @@ COPY scripts scripts
 
 RUN npm i
 
+RUN npm run lib:build
+
 RUN npm run build
 
 ENV NODE_ENV=production
