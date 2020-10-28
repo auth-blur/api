@@ -9,14 +9,14 @@ COPY tsconfig.build.json tsconfig.json ./
 
 COPY libs libs
 COPY src src
-
-RUN npm i
+COPY scripts scripts
 
 RUN ls
+RUN npm i
 
-RUN make
+RUN npm run build
 
 ENV NODE_ENV=production
 ENV PORT=8080
 
-CMD make start
+CMD ["npm","run","start:prod"]
