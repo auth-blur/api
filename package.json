@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
+    "format": "node scripts/prettier",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "lib:rebuild": "node-gyp rebuild",
     "lib:build": "node-gyp configure && node-gyp build",
+    "secret:write": "node ./scripts/secrets write",
     "prettier:watch": "onchange \"{src,libs,test}/**/*.ts\" -- prettier --write \"{{changed}}\""
   },
   "bugs": {
@@ -34,6 +35,7 @@
     "@nestjs/platform-fastify": "^7.4.2",
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.1.0",
+    "@sendgrid/mail": "^7.3.0",
     "@webundsoehne/nest-fastify-file-upload": "^1.0.0",
     "argon2": "^0.27.0",
     "bindings": "^1.5.0",
@@ -43,8 +45,10 @@
     "fastify-helmet": "^5.0.1",
     "fastify-multer": "^2.0.2",
     "firebase": "^7.19.1",
+    "glob": "^7.1.6",
     "got": "^11.5.2",
     "jsonwebtoken": "^8.5.1",
+    "marked": "^1.2.0",
     "mongoose": "^5.10.0",
     "ms": "^2.1.2",
     "nestjs-rate-limit": "^1.0.6",
@@ -85,6 +89,7 @@
     "i": "^0.3.6",
     "jest": "26.0.1",
     "memory-cache": "^0.2.0",
+    "node-fetch": "^2.6.1",
     "node-gyp": "^7.1.0",
     "onchange": "^7.0.2",
     "prettier": "^1.19.1",

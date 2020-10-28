@@ -3,19 +3,17 @@ import {
     Entity,
     ObjectID,
     ObjectIdColumn,
-    PrimaryColumn
+    PrimaryColumn,
 } from "typeorm";
 
 @Entity({ name: "Early" })
 export class EarlyMailEntity {
-
-    @PrimaryColumn({type: "string", unique: true})
-    mail: string
+    @PrimaryColumn({ type: "string", unique: true })
+    mail: string;
 
     @ObjectIdColumn()
-    _id: ObjectID
-    
+    _id: ObjectID;
 
     @CreateDateColumn({ type: "timestamp" })
-    createdAt: number
+    createdAt: number;
 }

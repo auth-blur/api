@@ -6,16 +6,14 @@ import { MailService } from "./mail.service";
 
 @Controller("early")
 export class EarlyController {
-    constructor(
-        private mailService: MailService
-    ) {}
+    constructor(private mailService: MailService) {}
 
     @Post("mail")
-    @RateLimit({ points: 3, duration: 3*60*60 })
-    @RateLimit({ points: 15, duration: 24*60*60 })
+    @RateLimit({ points: 3, duration: 3 * 60 * 60 })
+    @RateLimit({ points: 15, duration: 24 * 60 * 60 })
     async postEarlyList(
-        @Body() mailDto: PostEarlyDto
-    ):Promise<PicasscoResponse> {
-        return await this.mailService.postEarlyList(mailDto.mail)
+        @Body() mailDto: PostEarlyDto,
+    ): Promise<PicasscoResponse> {
+        return await this.mailService.postEarlyList(mailDto.mail);
     }
-} 
+}

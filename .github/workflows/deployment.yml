@@ -16,9 +16,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - uses: wei/curl@master
-              with:
-                args: -o prod.env ${{ secrets.URL_ENV }}
+                submodules: "recursive"
             - uses: superfly/flyctl-actions@1.1
               with:
                   args: "deploy"

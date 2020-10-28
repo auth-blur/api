@@ -146,7 +146,9 @@ export class AvatarService {
         avatarID,
         size,
     }: GetAvatarDto & { size?: number }): Promise<Buffer> {
-        let AvatarRef = this.FirebaseStorage.child("default.png");
+        let AvatarRef = this.FirebaseStorage.child(
+            `def-${userID % 2 === 0 ? "dark" : "light"}.png`,
+        );
         if (!avatarID) {
             const user = await this.userService.getUser(userID);
             if (!user) throw new NotFoundException("User Not Found");
