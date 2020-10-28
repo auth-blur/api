@@ -11,6 +11,8 @@ COPY libs libs
 COPY src src
 COPY scripts scripts
 
+RUN npm run lib:build
+
 RUN ls
 RUN npm i
 
