@@ -14,4 +14,4 @@ The main purpose of this repository is to develop it faster and provide a better
 
 ## License
 
-Picass.co Website is [MPL-2.0 licensed](./LICENSE) .
+Picass.co API is [MPL-2.0 licensed](./LICENSE) .
