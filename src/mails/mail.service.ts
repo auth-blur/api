@@ -8,23 +8,26 @@ import { MongoRepository } from "typeorm";
 export class MailService {
     constructor(
         @InjectRepository(EarlyMailEntity)
-        private readonly earlyMailEntity: MongoRepository<EarlyMailEntity>
+        private readonly earlyMailEntity: MongoRepository<EarlyMailEntity>,
     ) {}
-    
-    async isExistEarlyList(address: string):Promise<boolean> {
-        return await this.earlyMailEntity.count({ mail: address }) > 0
+
+    async isExistEarlyList(address: string): Promise<boolean> {
+        return (await this.earlyMailEntity.count({ mail: address })) > 0;
     }
 
-    async postEarlyList(address:string):Promise<PicasscoResponse> {
-        if(await this.isExistEarlyList(address))
-            throw new BadRequestException({},"This mail is already registered")
-            
+    async postEarlyList(address: string): Promise<PicasscoResponse> {
+        if (await this.isExistEarlyList(address))
+            throw new BadRequestException(
+                {},
+                "This mail is already registered",
+            );
+
         const mailEntity = this.earlyMailEntity.create({
-            mail: address
-        })
-        await this.earlyMailEntity.save(mailEntity)
+            mail: address,
+        });
+        await this.earlyMailEntity.save(mailEntity);
         return {
-            message: "Successfully joined the Early Access"
-        }
+            message: "Successfully joined the Early Access",
+        };
     }
 }
