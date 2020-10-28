@@ -14,9 +14,9 @@ RUN npm i
 
 RUN ls
 
-RUN npm run build
+RUN make
 
 ENV NODE_ENV=production
 ENV PORT=8080
 
-CMD [ "npm", "run", "start:prod" ]
+CMD make start
