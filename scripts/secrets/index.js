@@ -18,7 +18,8 @@ let didErr = false;
 
 const getSecrets = async () => {
     console.log("Fetching secrets...");
-    if(!(BASE_URL&&APP_NAME&&KEY)) throw new Error("Missing environments: BASE_URL, APP_NAME or KEY ")
+    if (!(BASE_URL && APP_NAME && KEY))
+        throw new Error("Missing environments: BASE_URL, APP_NAME or KEY ");
     const { data } = await (
         await fetch([BASE_URL, APP_NAME, "data", KEY].join("/"), {
             headers: {

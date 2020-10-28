@@ -23,10 +23,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const exRes = exception.getResponse();
         const id = cache.get(`request.${req.id}`);
         res.status(status).send(
-            Object.assign({}, exRes, {
-                id,
-                statusCode: status,
-            }),
+            Object.assign(
+                typeof exRes === "string" ? { message: exRes } : exRes,
+                {
+                    id,
+                    statusCode: status,
+                },
+            ),
         );
     }
 }

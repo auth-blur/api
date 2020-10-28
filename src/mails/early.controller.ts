@@ -12,8 +12,8 @@ export class EarlyController {
     @RateLimit({ points: 3, duration: 3 * 60 * 60 })
     @RateLimit({ points: 15, duration: 24 * 60 * 60 })
     async postEarlyList(
-        @Body() mailDto: PostEarlyDto,
+        @Body() { mail }: PostEarlyDto,
     ): Promise<PicasscoResponse> {
-        return await this.mailService.postEarlyList(mailDto.mail);
+        return await this.mailService.postEarlyList(mail);
     }
 }
