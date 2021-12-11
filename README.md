@@ -1,12 +1,6 @@
-<div align="center">
+# Blur API
 
-[![Picassco-Banner](https://raw.githubusercontent.com/picass-co/Website/dev/public/assets/banners/default.png)](https://picass.co)
-
-</div>
-
-# Picass.co API
-
-Picass.co API's public repository
+Blur's public repository
 
 ## Information
 
