@@ -48,7 +48,7 @@
     "glob": "^7.1.6",
     "got": "^11.5.2",
     "jsonwebtoken": "^8.5.1",
-    "marked": "^2.0.0",
+    "marked": "^4.0.10",
     "mongoose": "^5.10.0",
     "ms": "^2.1.2",
     "nestjs-rate-limit": "^1.0.6",
